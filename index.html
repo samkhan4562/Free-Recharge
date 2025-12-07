@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Free Recharge Wala - Spin & Win</title>
+    
+    <!-- Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://gregarious-begonia-beab19.netlify.app/">
+    <meta property="og:title" content="🎉 Recharge Dhamaka! Spin & Win Free Recharge!">
+    <meta property="og:description" content="Click here to win 1 Month to 1 Year Free Recharge. Offer ending soon! ⏳">
+    <meta property="og:image" content="https://i.ibb.co/cSBHG6WN/recharge.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://i.ibb.co/cSBHG6WN/recharge.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; overflow-x: hidden; }
+        
+        /* Wheel & UI Styles */
+        .wheel-wrapper { 
+            position: relative; width: 340px; height: 340px; margin: 0 auto; padding: 12px;
+            background: linear-gradient(145deg, #FFD700, #B8860B);
+            border-radius: 50%;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
+        }
+        @media (max-width: 380px) { .wheel-wrapper { width: 300px; height: 300px; } }
+
+        .wheel-container {
+            width: 100%; height: 100%; border-radius: 50%; overflow: hidden;
+            border: 6px solid #fff; position: relative;
+            background: conic-gradient(
+                #3b82f6 0deg 45deg,   #ffffff 45deg 90deg,  
+                #ef4444 90deg 135deg, #f59e0b 135deg 180deg,
+                #3b82f6 180deg 225deg,#ffffff 225deg 270deg,
+                #ef4444 270deg 315deg,#f59e0b 315deg 360deg
+            );
+            transition: transform 6s cubic-bezier(0.2, 0.1, 0.1, 1);
+        }
+
+        .wheel-segment { position: absolute; width: 50%; height: 50%; top: 0; left: 25%; transform-origin: bottom center; display: flex; justify-content: center; padding-top: 25px; }
+        .seg-text { font-weight: 800; font-size: 15px; text-align: center; line-height: 1.1; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+        .text-dark { color: #1e293b; } .text-light { color: #ffffff; }
+
+        .wheel-pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); z-index: 30; width: 45px; height: 55px; background: #dc2626; clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 50% 100%, 0% 20%); border-top: 5px solid #fcd34d; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
+        .spin-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 75px; height: 75px; background: radial-gradient(circle, #ef4444, #991b1b); border-radius: 50%; border: 4px solid #fff; z-index: 20; display: flex; justify-content: center; align-items: center; font-weight: 900; color: white; box-shadow: 0 5px 20px rgba(0,0,0,0.5); cursor: pointer; font-size: 1.1rem; }
+
+        /* UI Cards */
+        .glass-card { background: #1e293b; border: 1px solid #334155; border-radius: 1.5rem; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5); }
+        .input-dark { background: #0f172a; border: 1px solid #334155; color: white; }
+        .input-dark:focus { border-color: #3b82f6; ring: 2px solid #3b82f6; }
+        .radio-card input:checked + div { border-color: #3b82f6; background-color: #1e40af; }
+        .radio-card input:checked + div .circle { border-color: #60a5fa; background-color: #3b82f6; }
+        
+        /* Modals & Ticker */
+        .custom-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(8px); animation: fadeIn 0.3s; }
+        .modal-box { background: #1e293b; border: 1px solid #334155; width: 90%; max-width: 350px; border-radius: 24px; padding: 30px; text-align: center; transform: scale(0.9); transition: 0.3s; color: white; }
+        .custom-modal.active { display: flex; } .custom-modal.active .modal-box { transform: scale(1); }
+        .terms-scroll { max-height: 60vh; overflow-y: auto; text-align: left; padding: 10px; font-size: 13px; color: #94a3b8; }
+        .ticker-wrap { overflow: hidden; height: 50px; background: #1e293b; border-radius: 12px; border: 1px solid #334155; position: relative; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="bg-slate-950 min-h-screen pb-10">
+
+    <!-- TIMER -->
+    <div class="fixed top-0 left-0 w-full bg-slate-900 border-b border-slate-800 text-white py-3 shadow-lg z-50 text-center font-bold text-sm flex justify-center items-center gap-2">
+        <i data-lucide="clock" class="w-4 h-4 text-yellow-400"></i>
+        <span class="text-slate-400">Offer Ends in:</span>
+        <span id="timer" class="bg-slate-800 px-2 py-0.5 rounded text-yellow-400 font-mono border border-slate-700">00:00:00</span>
+    </div>
+
+    <div class="container mx-auto px-4 pt-20 max-w-lg">
+
+        <!-- HEADER -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 tracking-wider drop-shadow-sm">FREE RECHARGE</h1>
+            <p class="text-slate-400 text-sm mt-1">Spin to win up to 1 Year Free!</p>
+        </div>
+
+        <!-- STAGE 1: SPIN WHEEL -->
+        <div id="stage-spin">
+            <div class="wheel-wrapper mb-10">
+                <div class="wheel-lights"></div>
+                <div class="wheel-container" id="wheel">
+                    <div class="wheel-segment" style="transform: rotate(22.5deg);"><span class="seg-text text-light">1 Month<br>Plan</span></div>
+                    <div class="wheel-segment" style="transform: rotate(67.5deg);"><span class="seg-text text-dark">2 GB<br>Data</span></div>
+                    <div class="wheel-segment" style="transform: rotate(112.5deg);"><span class="seg-text text-light">Try<br>Again</span></div>
+                    <div class="wheel-segment" style="transform: rotate(157.5deg);"><span class="seg-text text-dark">1 Year<br>Plan</span></div>
+                    <div class="wheel-segment" style="transform: rotate(202.5deg);"><span class="seg-text text-light">84 Days<br>Plan</span></div>
+                    <div class="wheel-segment" style="transform: rotate(247.5deg);"><span class="seg-text text-dark">Better<br>Luck</span></div>
+                    <div class="wheel-segment" style="transform: rotate(292.5deg);"><span class="seg-text text-light">3 Months<br>Plan</span></div>
+                    <div class="wheel-segment" style="transform: rotate(337.5deg);"><span class="seg-text text-dark">6 Months<br>Plan</span></div>
+                </div>
+                <div class="wheel-pointer"></div>
+                <div class="spin-center" onclick="checkSpin()">SPIN</div>
+            </div>
+
+            <button onclick="checkSpin()" id="spin-btn" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-xl py-4 rounded-2xl shadow-xl shadow-blue-900/50 border-b-4 border-blue-900 active:scale-95 transition">SPIN NOW</button>
+
+            <!-- LIVE WINNER TICKER -->
+            <div class="mt-8">
+                <div class="flex items-center justify-between mb-2 px-1">
+                    <p class="text-xs text-slate-500 font-bold uppercase tracking-widest">Recent Winners</p>
+                    <span class="flex h-2 w-2 relative">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                </div>
+                <div class="ticker-wrap flex items-center justify-center" id="ticker-box"></div>
+            </div>
+        </div>
+
+        <!-- STAGE 2: CLAIM FORM -->
+        <div id="stage-form" class="hidden">
+            <div class="glass-card p-6 w-full relative">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-bold text-white">Congratulations! 🎉</h2>
+                    <div class="bg-slate-800/50 p-4 rounded-xl mt-3 border border-slate-700">
+                        <p class="text-slate-400 text-xs uppercase font-bold">You Won</p>
+                        <h3 id="won-text" class="text-yellow-400 font-black text-2xl mt-1"></h3>
+                    </div>
+                </div>
+
+                <form onsubmit="handleClaim(event)" class="space-y-4">
+                    <div><label class="block text-xs font-bold text-slate-400 uppercase mb-1">Full Name</label><input type="text" id="name" required class="w-full px-4 py-3 input-dark rounded-xl outline-none focus:ring-2 focus:ring-blue-500 font-medium"></div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div><label class="block text-xs font-bold text-slate-400 uppercase mb-1">Mobile</label><input type="tel" id="mobile" required maxlength="10" class="w-full px-4 py-3 input-dark rounded-xl outline-none focus:ring-2 focus:ring-blue-500 font-medium"></div>
+                        <div><label class="block text-xs font-bold text-slate-400 uppercase mb-1">Age</label><input type="number" id="age" required class="w-full px-4 py-3 input-dark rounded-xl outline-none focus:ring-2 focus:ring-blue-500 font-medium"></div>
+                    </div>
+                    <div><label class="block text-xs font-bold text-slate-400 uppercase mb-1">Email ID</label><input type="email" id="email" required class="w-full px-4 py-3 input-dark rounded-xl outline-none focus:ring-2 focus:ring-blue-500 font-medium"></div>
+
+                    <!-- Operator -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Select Operator</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="radio-card cursor-pointer"><input type="radio" name="operator" value="Jio" class="hidden" required><div class="border border-slate-700 bg-slate-800 p-3 rounded-xl flex items-center justify-between transition"><span class="font-bold text-slate-200 text-sm">Jio</span><div class="w-5 h-5 rounded-full border-2 border-slate-600 circle flex items-center justify-center"></div></div></label>
+                            <label class="radio-card cursor-pointer"><input type="radio" name="operator" value="Airtel" class="hidden" required><div class="border border-slate-700 bg-slate-800 p-3 rounded-xl flex items-center justify-between transition"><span class="font-bold text-slate-200 text-sm">Airtel</span><div class="w-5 h-5 rounded-full border-2 border-slate-600 circle flex items-center justify-center"></div></div></label>
+                            <label class="radio-card cursor-pointer"><input type="radio" name="operator" value="Vi" class="hidden" required><div class="border border-slate-700 bg-slate-800 p-3 rounded-xl flex items-center justify-between transition"><span class="font-bold text-slate-200 text-sm">Vi</span><div class="w-5 h-5 rounded-full border-2 border-slate-600 circle flex items-center justify-center"></div></div></label>
+                            <label class="radio-card cursor-pointer"><input type="radio" name="operator" value="BSNL" class="hidden" required><div class="border border-slate-700 bg-slate-800 p-3 rounded-xl flex items-center justify-between transition"><span class="font-bold text-slate-200 text-sm">BSNL</span><div class="w-5 h-5 rounded-full border-2 border-slate-600 circle flex items-center justify-center"></div></div></label>
+                        </div>
+                    </div>
+
+                    <!-- Gender -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Gender</label>
+                        <div class="flex gap-3">
+                            <label class="radio-card cursor-pointer flex-1"><input type="radio" name="gender" value="Male" class="hidden" required><div class="border border-slate-700 bg-slate-800 p-3 rounded-xl flex items-center justify-center gap-2 transition"><span class="font-bold text-slate-200 text-sm">Male</span><div class="w-4 h-4 rounded-full border-2 border-slate-600 circle"></div></div></label>
+                            <label class="radio-card cursor-pointer flex-1"><input type="radio" name="gender" value="Female" class="hidden" required><div class="border border-slate-700 bg-slate-800 p-3 rounded-xl flex items-center justify-center gap-2 transition"><span class="font-bold text-slate-200 text-sm">Female</span><div class="w-4 h-4 rounded-full border-2 border-slate-600 circle"></div></div></label>
+                        </div>
+                    </div>
+
+                    <!-- ✅ ADDED TERMS LINK -->
+                    <div class="flex items-center justify-between mt-4 mb-2">
+                        <span class="text-xs text-slate-500">By claiming, you agree to our</span>
+                        <button type="button" onclick="openTerms()" class="text-xs text-blue-400 font-bold underline">Terms & Conditions</button>
+                    </div>
+
+                    <button type="submit" id="submit-btn" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold text-lg py-4 rounded-xl shadow-lg transition mt-4 active:scale-95 border-b-4 border-green-800">CLAIM NOW</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- STAGE 3: SHARE -->
+        <div id="stage-share" class="hidden">
+            <div class="glass-card p-6 text-center">
+                <div class="mb-4">
+                    <div class="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-2 border border-slate-700">
+                        <i data-lucide="share-2" class="w-8 h-8 text-blue-400"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white">Verification</h2>
+                    <p class="text-slate-400 mt-1 text-sm">Share with 5 friends to unlock your recharge.</p>
+                </div>
+                
+                <div class="w-full bg-slate-800 rounded-full h-3 mb-2 overflow-hidden border border-slate-700">
+                    <div id="prog-fill" class="bg-green-500 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <p class="font-bold text-slate-300 mb-6"><span id="share-count">0</span>/5 Shared</p>
+
+                <div class="space-y-3">
+                    <button class="w-full py-3 bg-[#25D366] text-white rounded-xl font-bold shadow-md hover:opacity-90 flex items-center justify-center gap-2 transition" id="btn-1" onclick="share(1)"><i data-lucide="message-circle" class="w-5 h-5"></i> Share 1</button>
+                    <button class="w-full py-3 bg-[#25D366] text-white rounded-xl font-bold shadow-md hover:opacity-90 flex items-center justify-center gap-2 transition" id="btn-2" onclick="share(2)"><i data-lucide="message-circle" class="w-5 h-5"></i> Share 2</button>
+                    <button class="w-full py-3 bg-[#25D366] text-white rounded-xl font-bold shadow-md hover:opacity-90 flex items-center justify-center gap-2 transition" id="btn-3" onclick="share(3)"><i data-lucide="message-circle" class="w-5 h-5"></i> Share 3</button>
+                    <button class="w-full py-3 bg-[#25D366] text-white rounded-xl font-bold shadow-md hover:opacity-90 flex items-center justify-center gap-2 transition" id="btn-4" onclick="share(4)"><i data-lucide="message-circle" class="w-5 h-5"></i> Share 4</button>
+                    <button class="w-full py-3 bg-[#25D366] text-white rounded-xl font-bold shadow-md hover:opacity-90 flex items-center justify-center gap-2 transition" id="btn-5" onclick="share(5)"><i data-lucide="message-circle" class="w-5 h-5"></i> Share 5</button>
+                </div>
+
+                <button id="final-btn" class="w-full py-4 bg-slate-700 text-slate-400 rounded-xl font-bold shadow-lg mt-6 cursor-not-allowed transition border-b-4 border-slate-800" onclick="finalApprove()">FINAL APPROVE</button>
+            </div>
+        </div>
+
+        <!-- STAGE 4: SUCCESS -->
+        <div id="stage-success" class="hidden">
+            <div class="glass-card p-8 text-center">
+                <div class="w-24 h-24 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce border border-green-500/50">
+                    <i data-lucide="check" class="w-12 h-12 text-green-500"></i>
+                </div>
+                <h2 class="text-3xl font-extrabold text-white mb-2">SUCCESS!</h2>
+                <p class="text-slate-400 text-lg">Recharge request verified. You will receive an SMS shortly.</p>
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 mt-6">
+                    <p class="text-xs text-slate-500 uppercase font-bold">Reference ID</p>
+                    <p class="text-xl font-mono font-bold text-yellow-400">#RCH<span id="ref-id"></span></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL (Alert) -->
+    <div id="custom-modal" class="custom-modal">
+        <div class="modal-box">
+            <div class="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-500/50">
+                <i data-lucide="alert-triangle" class="w-8 h-8 text-red-500"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2" id="modal-title">Alert</h3>
+            <p class="text-slate-400 mb-6 text-sm" id="modal-msg"></p>
+            <button onclick="closeModal()" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition">OK, Got it</button>
+        </div>
+    </div>
+
+    <!-- TERMS MODAL (Detailed) -->
+    <div id="terms-modal" class="custom-modal">
+        <div class="modal-box text-left max-w-md w-full">
+            <h3 class="text-lg font-bold text-white mb-3 border-b border-slate-700 pb-2">User Agreement</h3>
+            <div class="terms-scroll">
+                <p class="mb-2"><strong>1. Purpose:</strong> This Spin & Win game is a promotional campaign designed for entertainment. The rewards shown (Recharges, Cash) are illustrative and subject to verification.</p>
+                <p class="mb-2"><strong>2. Data Consent:</strong> By participating and submitting your details, you explicitly authorize us and our third-party partners (including financial institutions, banks, NBFCs, and insurance providers) to contact you via Phone Call, SMS, WhatsApp, or Email.</p>
+                <p class="mb-2"><strong>3. Purpose of Data:</strong> The information provided may be used for credit assessment, lead generation, and to offer you financial products such as Personal Loans, Credit Cards, Insurance, and other banking services. You agree that this consent overrides your registration with the NDNC (National Do Not Call) registry.</p>
+                <p class="mb-2"><strong>4. Limitation:</strong> Only one claim per mobile number is allowed. Duplicate entries will be rejected.</p>
+                <p class="mb-2"><strong>5. Acceptance:</strong> By clicking "Claim Now" or "Submit", I confirm that I am an Indian citizen above 18 years of age and I accept all the terms mentioned above.</p>
+            </div>
+            <button onclick="document.getElementById('terms-modal').classList.remove('active')" class="w-full py-3 bg-blue-600 text-white rounded-xl font-bold mt-4">I Understand & Agree</button>
+        </div>
+    </div>
+
+    <!-- FIREBASE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, query, where, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB2kPvi_xlWwguZYnQinlojQsO-FYsrlss",
+            authDomain: "lead-afb36.firebaseapp.com",
+            projectId: "lead-afb36",
+            storageBucket: "lead-afb36.firebasestorage.app",
+            messagingSenderId: "205354984934",
+            appId: "1:205354984934:web:bffb2b4553e6cd88c32227"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        window.db = db;
+        window.addDoc = addDoc;
+        window.collection = collection;
+        window.query = query;
+        window.where = where;
+        window.getDocs = getDocs;
+        window.updateDoc = updateDoc;
+        window.doc = doc;
+    </script>
+
+    <script>
+        lucide.createIcons();
+
+        // --- RANDOM TIMER ---
+        let time = 28800 + Math.floor(Math.random() * 3000); 
+        setInterval(() => {
+            time--; if(time<0) time=0;
+            let h = Math.floor(time/3600), m = Math.floor((time%3600)/60), s = time%60;
+            document.getElementById('timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        }, 1000);
+
+        // --- UI UTILS ---
+        function showModal(title, msg) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-msg').innerText = msg;
+            document.getElementById('custom-modal').classList.add('active');
+        }
+        function closeModal() { document.getElementById('custom-modal').classList.remove('active'); }
+        window.openTerms = () => document.getElementById('terms-modal').classList.add('active');
+
+        // --- TICKER ---
+        const winners = [
+            {n:"Rahul S.",p:"1 Year Plan"}, {n:"Priya M.",p:"84 Days Plan"}, {n:"Amit K.",p:"2GB Data"}, 
+            {n:"Sneha R.",p:"3 Month Plan"}, {n:"Vikram",p:"1 Year Plan"}, {n:"Anjali",p:"6 Months Plan"}
+        ];
+        let tickIdx = 0;
+        function showTicker() {
+            const box = document.getElementById('ticker-box');
+            const w = winners[tickIdx];
+            box.innerHTML = `<div class="flex items-center gap-3 text-white px-4 animate-pulse"><div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center font-bold text-xs shadow-lg border border-blue-400">${w.n[0]}</div><div class="text-sm"><span class="font-bold text-white">${w.n}</span> won <span class="font-bold text-yellow-400">${w.p}</span></div></div>`;
+            tickIdx = (tickIdx + 1) % winners.length;
+        }
+        setInterval(showTicker, 3000); showTicker();
+
+        // --- SPIN LOGIC ---
+        let spun = false;
+        let winningPrize = ""; 
+        
+        function checkSpin() {
+            if(localStorage.getItem('offerClaimed')) {
+                showModal("Limit Reached", "You have already claimed your offer successfully!");
+                return;
+            }
+            spinWheel();
+        }
+
+        function spinWheel() {
+            if(spun) return;
+            spun = true;
+            const wheel = document.getElementById('wheel');
+            const spinBtn = document.getElementById('spin-btn');
+            
+            spinBtn.classList.add('opacity-50', 'pointer-events-none');
+            spinBtn.innerText = "Spinning...";
+
+            const winningSegments = [
+                {deg: 22.5, prize: "1 Month Plan"}, 
+                {deg: 67.5, prize: "50% Off"}, 
+                {deg: 112.5, prize: "2 GB Data"}, 
+                {deg: 157.5, prize: "1 Year Plan"},
+                {deg: 202.5, prize: "84 Days Plan"},
+                {deg: 292.5, prize: "3 Months Plan"},
+                {deg: 337.5, prize: "6 Months Plan"}
+            ];
+            
+            const winner = winningSegments[Math.floor(Math.random() * winningSegments.length)];
+            winningPrize = winner.prize;
+
+            const totalDeg = (360 * 8) + (360 - winner.deg); 
+            wheel.style.transform = `rotate(${totalDeg}deg)`;
+
+            setTimeout(() => {
+                fireConfetti();
+                document.getElementById('won-text').innerText = winningPrize;
+                setTimeout(() => {
+                    document.getElementById('stage-spin').classList.add('hidden');
+                    document.getElementById('stage-form').classList.remove('hidden');
+                }, 2000);
+            }, 7000);
+        }
+
+        function fireConfetti() { confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } }); }
+
+        // --- FORM SUBMIT ---
+        let docId = null;
+        async function handleClaim(e) {
+            e.preventDefault();
+            const btn = document.querySelector('button[type="submit"]');
+            const mobile = document.getElementById('mobile').value;
+            const op = document.querySelector('input[name="operator"]:checked')?.value;
+            const gen = document.querySelector('input[name="gender"]:checked')?.value;
+
+            if(!op || !gen) { showModal("Error", "Please select Operator & Gender"); return; }
+
+            btn.innerText = "Checking...";
+            btn.classList.add('opacity-70');
+
+            try {
+                const q = window.query(window.collection(window.db, "recharge-leads"), window.where("mobile", "==", mobile));
+                const snap = await window.getDocs(q);
+
+                if(!snap.empty) {
+                    showModal("Duplicate", "This mobile number has already claimed an offer!");
+                    btn.innerText = "ALREADY CLAIMED";
+                    return;
+                }
+
+                const data = {
+                    name: document.getElementById('name').value,
+                    mobile: mobile,
+                    email: document.getElementById('email').value,
+                    age: document.getElementById('age').value,
+                    operator: op,
+                    gender: gen,
+                    prize: winningPrize,
+                    timestamp: new Date().toISOString(),
+                    status: "pending"
+                };
+
+                const ref = await window.addDoc(window.collection(window.db, "recharge-leads"), data);
+                docId = ref.id;
+                
+                document.getElementById('stage-form').classList.add('hidden');
+                document.getElementById('stage-share').classList.remove('hidden');
+
+            } catch(err) {
+                console.error(err);
+                showModal("Network Error", "Connection failed. Please try again.");
+                btn.innerText = "RETRY";
+            }
+        }
+
+        // --- SHARE LOGIC ---
+        let count = 0;
+        function share(id) {
+            const btn = document.getElementById('btn-'+id);
+            if(btn.disabled) return;
+            
+            const text = encodeURIComponent(`I won ${winningPrize} Free Recharge! Spin & Win here: ${window.location.href}`);
+            window.open(`https://wa.me/?text=${text}`, "_blank");
+            
+            setTimeout(() => {
+                btn.disabled = true;
+                btn.innerHTML = `<i data-lucide="check" class="w-5 h-5"></i> Shared`;
+                btn.classList.remove('bg-[#25D366]');
+                btn.classList.add('bg-slate-700', 'cursor-not-allowed');
+                count++;
+                document.getElementById('share-count').innerText = count;
+                document.getElementById('prog-fill').style.width = (count*20)+"%";
+                lucide.createIcons();
+                
+                if(count>=5) {
+                    const fBtn = document.getElementById('final-btn');
+                    fBtn.classList.remove('opacity-50', 'pointer-events-none', 'bg-slate-700');
+                    fBtn.classList.add('bg-blue-600', 'hover:bg-blue-500', 'shadow-xl', 'animate-pulse');
+                    fBtn.style.cursor = "pointer";
+                    fBtn.onclick = finalApprove;
+                }
+            }, 5000);
+        }
+
+        async function finalApprove() {
+            if(!docId) return;
+            const btn = document.getElementById('final-btn');
+            btn.innerText = "Verifying...";
+            
+            try {
+                const ref = window.doc(window.db, "recharge-leads", docId);
+                await window.updateDoc(ref, { status: "approved" });
+                localStorage.setItem('offerClaimed', 'true');
+
+                document.getElementById('stage-share').classList.add('hidden');
+                document.getElementById('stage-success').classList.remove('hidden');
+                document.getElementById('ref-id').innerText = Math.floor(10000+Math.random()*90000);
+                fireConfetti();
+            } catch(e) { console.log(e); }
+        }
+    </script>
+</body>
+</html>
